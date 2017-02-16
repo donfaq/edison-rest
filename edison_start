@@ -1,0 +1,6 @@
+sudo screen /dev/ttyUSB0 115200
+sshfs root@10.100.0.85:/home/root/ /home/gregory/edison/
+python -m CGIHTTPServer
+./ngrok start web backend
+
+

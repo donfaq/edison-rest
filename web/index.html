@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hallo</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+<p>
+    <button id="button">Change LED state</button>
+</p>
+
+<script>
+    $(function () {
+        $("#button").click(function () {
+            $.ajax({
+                url: "http://f56390de.ngrok.io/led",
+                context: document.body
+            }).done(function () {
+                alert("Led state changed")
+            });
+        });
+    });
+</script>
+</body>
+</html>
