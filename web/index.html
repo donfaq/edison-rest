@@ -6,20 +6,127 @@
 </head>
 <body>
 <p>
-    <button id="button">Change LED state</button>
+<table>
+    <tr>
+        <td>
+            <button class="led_state" data-color="R">Change R-LED state</button>
+        </td>
+        <td>
+            <button class="led_state" data-color="G">Change G-LED state</button>
+        </td>
+        <td>
+            <button class="led_state" data-color="B">Change B-LED state</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="indicator" id="R_ind"></div>
+        </td>
+        <td>
+            <div class="indicator" id="G_ind"></div>
+        </td>
+        <td>
+            <div class="indicator" id="B_ind"></div>
+        </td>
+    </tr>
+</table>
 </p>
+
+
+<style>
+    .indicator {
+        width: 20px;
+        height: 20px;
+        background: rgba(0, 0, 0, .3);
+        margin: auto;
+    }
+
+    #R_ind.active {
+        background: rgb(255, 0, 0);
+    }
+
+    #G_ind.active {
+        background: rgb(0, 255, 0);
+    }
+
+    #B_ind.active {
+        background: rgb(0, 0, 255);
+    }
+</style>
 
 <script>
     $(function () {
-        $("#button").click(function () {
+        $(".led_state").click(function () {
+            var pinColor = $(this).attr("data-color");
             $.ajax({
-                url: "http://f56390de.ngrok.io/led",
-                context: document.body
-            }).done(function () {
-                alert("Led state changed")
-            });
+                method: 'POST',
+                url: "http://d7883d28.ngrok.io/led?color=" + pinColor,
+                success: function (data) {
+                    var ind = $("#" + pinColor + "_ind");
+                    if (data == 0)
+                        ind.removeClass('active');
+                    else
+                        ind.addClass('active');
+                },
+                error: function (data) {
+
+                }
+            })
         });
     });
 </script>
+
+<table>
+    <tr>
+        <td>Temperature:</td>
+        <td>
+            <div id="temperature"></div>
+        </td>
+    </tr>
+</table>
+<script>
+    $(function () {
+        setInterval(function () {
+            $.ajax({
+                method: 'POST',
+                url: "http://d7883d28.ngrok.io/temperature",
+                success: function (data) {
+                    $("#temperature").text(data);
+                },
+                error: function (data) {
+                    $("#temperature").text("Error");
+                }
+            })
+        }, 2000)
+    });
+</script>
+
+<table>
+    <tr>
+        <td>Display text on LCD</td>
+        <td>
+            <input id="lcd_input" type="text" name="LCD Text"/>
+        </td>
+        <td>
+            <button id="lcd_button">
+                Send
+            </button>
+        </td>
+    </tr>
+</table>
+<script>
+    $(function () {
+        $("#lcd_button").click(function () {
+            $.ajax({
+                method: 'POST',
+                url: "http://d7883d28.ngrok.io/message?text=" + $("#lcd_input").val(),
+                error: function (data) {
+
+                }
+            })
+        });
+    });
+</script>
+
 </body>
 </html>

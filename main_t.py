@@ -1,31 +1,30 @@
-from flask import Flask, url_for
+from flask import Flask
+
 import edison_control as ec
 from flask import request
 
+from decorator import crossdomain
+
 app = Flask(__name__)
-led_state = 0
 
 
-@app.route("/led")
+@app.route("/led", methods=['POST'])
+@crossdomain(origin='*')
 def led():
-    global led_state
-    if led_state == 0:
-        led_state = 1
-    else:
-        led_state = 0
-    ec.led_write(led_state)
-    return "Now led state is " + str(led_state)
+    return ec.change_led_state(str(request.args.get('color')))
 
 
-@app.route('/message')
+@app.route("/temperature", methods=['POST'])
+@crossdomain(origin='*')
+def temperature():
+    return ec.get_temperature()
+
+
+@app.route('/message',  methods=['POST'])
+@crossdomain(origin='*')
 def message():
     ec.lcd_write(str(request.args.get('text')))
-    return "Your message is: \"" + str(request.args.get('text'))
-
-
-@app.route('/hello')
-def hello_world():
-    return 'hello world!'
+    return "Message displayed"
 
 
 if __name__ == '__main__':
