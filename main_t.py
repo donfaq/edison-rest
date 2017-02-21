@@ -1,9 +1,9 @@
 from flask import Flask
-
 import edison_control as ec
 from flask import request
-
 from decorator import crossdomain
+import threading
+
 
 app = Flask(__name__)
 
@@ -27,5 +27,25 @@ def message():
     return "Message displayed"
 
 
+@app.route('/sound',  methods=['POST'])
+@crossdomain(origin='*')
+def sound():
+    ec.play_sound()
+    return "Sound played"
+
+
+@app.route('/music',  methods=['POST'])
+@crossdomain(origin='*')
+def music():
+	if str(request.args.get('state')) == "playing":
+		ec.playing = True
+	elif str(request.args.get('state')) == "pause":
+		ec.playing = False
+	return "Succ"
+
+
 if __name__ == '__main__':
-    app.run()
+	ec.playing = False
+	thread = threading.Thread(target=ec.music_thread, args=())
+	thread.start()
+	app.run()
