@@ -3,6 +3,9 @@
 <head>
     <title>Hallo</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        var backendAddress = "http://1597299a.ngrok.io";
+    </script>
 </head>
 <body>
 <p>
@@ -60,7 +63,7 @@
             var pinColor = $(this).attr("data-color");
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/led?color=" + pinColor,
+                url: backendAddress + "/led?color=" + pinColor,
                 success: function (data) {
                     var ind = $("#" + pinColor + "_ind");
                     if (data == 0)
@@ -89,7 +92,7 @@
         setInterval(function () {
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/temperature",
+                url: backendAddress + "/temperature",
                 success: function (data) {
                     $("#temperature").text(data);
                 },
@@ -119,7 +122,7 @@
         $("#lcd_button").click(function () {
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/message?text=" + $("#lcd_input").val(),
+                url: backendAddress + "/message?text=" + $("#lcd_input").val(),
                 error: function (data) {
 
                 }
@@ -143,7 +146,7 @@
         $("#buzzer_button").click(function () {
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/sound",
+                url: backendAddress + "/sound",
                 error: function (data) {
 
                 }
@@ -169,13 +172,21 @@
             </button>
         </td>
     </tr>
+    <tr>
+        <td>Stop music</td>
+        <td>
+            <button id="music_stop_button">
+                Stop
+            </button>
+        </td>
+    </tr>
 </table>
 <script>
     $(function () {
         $("#music_play_button").click(function () {
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/music?state=playing",
+                url: backendAddress + "/music?state=playing",
                 error: function (data) {
 
                 }
@@ -184,7 +195,16 @@
         $("#music_pause_button").click(function () {
             $.ajax({
                 method: 'POST',
-                url: "http://ae31c916.ngrok.io/music?state=pause",
+                url: backendAddress + "/music?state=pause",
+                error: function (data) {
+
+                }
+            })
+        });
+        $("#music_stop_button").click(function () {
+            $.ajax({
+                method: 'POST',
+                url: backendAddress + "/music?state=stop",
                 error: function (data) {
 
                 }
